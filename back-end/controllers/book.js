@@ -166,11 +166,32 @@ module.exports = {
 
   uploadFile: async (req, res) => {
     try {
-      
+      let fileUploaded = req.file;
+      console.log("controller", fileUploaded);
+      await book.update(
+        {
+          Images: fileUploaded.filename,
+        },
+        {
+          where: {
+            id: req.body.id,
+          },
+        }
+      );
+      const getBook = await book.findOne({
+        where: {
+          id: req.body.id,
+        },
+        raw: true,
+      });
+      res.status(200).send({
+        id: getBook.id,
+        Title: getBook.Title,
+        Images: getBook.Images,
+      });
     } catch (err) {
       console.log(err);
       res.status(400).send(err);
     }
   },
-
 };
