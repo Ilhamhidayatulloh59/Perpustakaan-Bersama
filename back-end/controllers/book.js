@@ -164,6 +164,20 @@ module.exports = {
     }
   },
 
+
+  sortBy: async (req, res) => {
+    try {
+      const { data, order } = req.query;
+      const users = await book.findAll({
+        order: [[data, order]],
+      });
+      res.status(200).send(users);
+    } catch (err) {
+      console.log(err);
+      res.status(400).send(err);
+    }
+  },
+
   uploadFile: async (req, res) => {
     try {
       let fileUploaded = req.file;
@@ -189,9 +203,4 @@ module.exports = {
         Title: getBook.Title,
         Images: getBook.Images,
       });
-    } catch (err) {
-      console.log(err);
-      res.status(400).send(err);
-    }
-  },
-};
+
