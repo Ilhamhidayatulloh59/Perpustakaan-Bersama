@@ -97,7 +97,7 @@ export default function BookCard() {
                 {/* {formik.values.searchName} */}
                 <FormControl isInvalid={formik.errors.searchName}>
                     <InputGroup >
-                    <Input placeholder="Cari Buku" id='search' type='text' bg='white'
+                    <Input placeholder="Cari Buku" _placeholder={{ color: useColorModeValue("black", "white"), opacity: .5 }} id='search' type='text' 
                         onChange={(event) => formik.setFieldValue("searchName", event.target.value)} />
                     <InputRightElement>
                         <Icon
