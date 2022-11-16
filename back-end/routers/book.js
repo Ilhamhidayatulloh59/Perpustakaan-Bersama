@@ -12,5 +12,10 @@ router.get("/list/total", book.totalBooks);
 router.get("/search", book.searchBy);
 router.get("/sort", book.sortBy);
 router.post("/uploaded/:id", multerUpload.single("file"), book.uploadFile)
+router.get("/view2", book.view2);
+// router.get("/list/title", book.getByTitle);
+// router.get("/author", book.getByAuthor);
+// router.get("/genre", book.getByGenre);
+// router.get("/publisher", book.getByPublisher);
 
 module.exports = router;
