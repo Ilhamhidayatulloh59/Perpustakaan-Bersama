@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Box, Button, Icon, Text, useToast, Image, Stack, Flex, FormControl, Select, InputGroup, Input, InputRightElement, FormHelperText, Tooltip, useColorModeValue, Center, FormLabel } from '@chakra-ui/react';
+=======
+import { Box, Button, Icon, Text, useToast, Image, Stack, Flex, FormControl, Select, InputGroup, Input, InputRightElement, FormHelperText, Tooltip, useColorModeValue, Center } from '@chakra-ui/react';
+>>>>>>> stage
 import { IoCartOutline } from "react-icons/io5";
 // import NextLink from 'next/link';
 import Axios from "axios";
@@ -13,6 +17,7 @@ import * as Yup from "yup";
 import ReactPaginate from 'react-paginate';
 
 
+<<<<<<< HEAD
 export default function BookCard() {
     const [limit, setLimit] = useState(10)
     const [searchProduct, setSearchProduct] = useState('')
@@ -25,18 +30,38 @@ export default function BookCard() {
     const data = useSelector((state) => state.bookSlice.value);
 
     const url = `http://localhost:2000/book/view2?search_query=${searchProduct}&page=${page}&limit=${limit}&order=${order ? order :`Title`}&order_direction=${order_direction ? order_direction : 'ASC'}`
+=======
+
+export default function BookCard() {
+    const [limit, setLimit] = useState(16)
+    const [searchProduct, setSearchProduct] = useState('')
+    const [page, setPage] = useState(1)
+    const [totalPage, setTotalPage] = useState(0)
+    const dispatch = useDispatch();
+    const data = useSelector((state) => state.bookSlice.value);
+    console.log(data)
+>>>>>>> stage
 
     const getData = async () => {
         try {
     
+<<<<<<< HEAD
             const res = await Axios.get(url)
             dispatch(syncData(res.data.result));
             
         } catch (err) {
+=======
+            const res = await Axios.get("http://localhost:2000/book/list")
+            dispatch(syncData(res.data));
+            
+        } catch (err) {
+
+>>>>>>> stage
             console.log(err);
             }
         };
         
+<<<<<<< HEAD
         async function fetchProduct(filter) {
                 setOrder_direction(filter)
             }
@@ -156,6 +181,101 @@ export default function BookCard() {
         </Flex> 
         </Center>
 
+=======
+        useEffect(() => {
+            getData()
+        }, [])
+
+  // ---------------------- filter name and product code ---------------------- //
+    const formik = useFormik({
+        initialValues: {
+            searchName: ``,
+        },
+        validationSchema: Yup.object().shape({
+            searchName: Yup.string()
+            .min(3, 'Minimal 3 huruf')
+        }),
+        validateOnChange: false,
+        onSubmit: async () => {
+            const { searchName } = formik.values;
+
+            setSearchProduct(searchName)
+            setPage(1)
+        }
+    })
+
+
+    return (
+        <>
+
+        <Flex flexWrap={'wrap'}  color={useColorModeValue("black", "white")}>
+            <Box className='filter' mr='10px'>
+
+                {/* {/* ---------- Sort By name and Price ---------- */}
+                    <Box w='220px' m='10px' mb='20px' borderWidth='1px' boxShadow='md' borderRadius='7px'>
+                        <Box alignItems={'center'} h='50px' borderTopRadius='7px' align='center' bg='pink.400' display='flex'>
+                            <Box h='25px' w='30px' ml='10px'>
+                            <Icon boxSize='6' as={BsFilterLeft}  />
+                            </Box>
+                            <Box h='25px'>
+                            <Text mx='10px' fontWeight='bold' >
+                                Urut Berdasarkan
+                            </Text>
+                            </Box>
+                        </Box>
+                        <Box p='15px'>
+                            <FormControl  isInvalid={formik.errors.sortByProduct}  >
+                            <Select onChange={(event) => {
+                            // fetchProduct(event.target.value)
+                        }}>
+                            <option value=''><Text color={useColorModeValue("black", "white")}>-- Pilih --</Text></option>
+                            <option value='product_asc'>Nama A-Z</option>
+                            <option value='product_des'>Nama Z-A</option>
+                        </Select>
+                        </FormControl>
+                    </Box>
+                </Box>
+            </Box>
+                <Box mx='5px' my='10px' maxW='810px'>
+                <Box display='flex' justifyContent='space-between' mb='10px'>
+
+                {/* ---------- Search filter by Name ---------- */}
+                <Box mx='10px' display='flex'>
+                {/* {formik.values.searchName} */}
+                <FormControl isInvalid={formik.errors.searchName}>
+                    <InputGroup >
+                    <Input placeholder="Cari Buku" id='search' type='text' bg='white'
+                        onChange={(event) => formik.setFieldValue("searchName", event.target.value)} />
+                    <InputRightElement>
+                        <Icon
+                        fontSize="xl"
+                        as={BiSearchAlt}
+                        sx={{ _hover: { cursor: "pointer" } }}
+                        onClick={() => formik.handleSubmit()}
+                        />
+                    </InputRightElement>
+                    </InputGroup>
+                    <FormHelperText color="red">
+                    {formik.errors.searchName}
+                    </FormHelperText>
+                </FormControl>
+                <Tooltip label='reset filter' fontSize='sm'>
+                    <Button ml='5px' colorScheme="pink"
+                    onClick={() => {
+                        async function submit() {
+                        setSearchProduct('')
+                        document.getElementById("search").value = '';
+                        formik.values.searchName = ''
+                        } submit()
+                    }} >
+                    <Icon boxSize='6' as={BiReset} />
+                    </Button>
+                </Tooltip>
+                </Box>
+                </Box>
+            </Box>
+        </Flex> 
+>>>>>>> stage
 
     <Center>
         <Flex flexWrap={'wrap'}>
@@ -173,9 +293,12 @@ export default function BookCard() {
                     </Text>
                 </Box>
                 <Box display='flex' fontSize='xs'>
+<<<<<<< HEAD
                         <Text fontWeight='bold' mr='5px'> {item.Publisher.substring(0, 20)}{item.Publisher.length >= 20 ? '...' : null} </Text>
                 </Box>
                 <Box display='flex' fontSize='xs'>
+=======
+>>>>>>> stage
                         <Text fontWeight='bold' color='#213360' textColor='#FF6B6B' mr='5px'> {item.Author} </Text>
                 </Box>
                 </Box>
@@ -192,6 +315,7 @@ export default function BookCard() {
         </Flex>
     </Center>
 
+<<<<<<< HEAD
 
     {/* <ReactPaginate
         breakLabel="..."
@@ -204,10 +328,28 @@ export default function BookCard() {
     /> */}
 
 
+=======
+    <Center>
+        <ReactPaginate
+            breakLabel="..."
+            nextLabel="next >"
+            // onPageChange={handlePageClick}
+            pageRangeDisplayed={5}
+            // pageCount={pageCount}
+            previousLabel="< previous"
+            renderOnZeroPageCount={null}
+        />
+    </Center>
+        
+>>>>>>> stage
     </>
     )
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> stage
 // {data.map(item => {
 //     return (
 // <Box w='180px' h='293px' borderWidth='1px' m='10px' _hover={{ boxShadow: 'xl' }} boxShadow='base' borderRadius='13px' bg='white'>
@@ -240,7 +382,14 @@ export default function BookCard() {
 // })}
 
 
+<<<<<<< HEAD
 
+=======
+ {/* <Flex flexWrap={'wrap'} justifyContent={'center'} color={useColorModeValue("black", "white")}>
+            <Box className='filter' mr='10px'>
+
+                {/* ---------- Sort By name and Price ---------- */}
+>>>>>>> stage
         //         <Box w='220px' m='10px' mb='20px' borderWidth='1px' boxShadow='md' borderRadius='7px'>
         //             <Box alignItems={'center'} h='50px' borderTopRadius='7px' align='center' bg='pink.400' display='flex'>
         //                 <Box h='25px' w='30px' ml='10px'>
@@ -342,4 +491,8 @@ export default function BookCard() {
         //         document.getElementById("pagingInput").value = parseInt(pageNow);
         //         }} size='sm' m='3px' borderColor="pink.400" borderRadius='9px' borderWidth='2px'>Next</Button>
         //     </Box>
+<<<<<<< HEAD
         // </Flex> 
+=======
+        // </Flex> */}
+>>>>>>> stage
