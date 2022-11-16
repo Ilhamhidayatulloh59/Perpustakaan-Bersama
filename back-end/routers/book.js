@@ -8,6 +8,7 @@ router.get("/list/:id", book.getById);
 router.delete("/list/:id", book.delete);
 router.patch("/list/:id", book.update);
 router.get("/list/total", book.totalBooks);
+router.get("/view2", book.view2);
 // router.get("/list/title", book.getByTitle);
 // router.get("/author", book.getByAuthor);
 // router.get("/genre", book.getByGenre);

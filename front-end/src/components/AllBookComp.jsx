@@ -1,4 +1,4 @@
-import { Box, Button, Icon, Text, useToast, Image, Stack, Flex, FormControl, Select, InputGroup, Input, InputRightElement, FormHelperText, Tooltip, useColorModeValue, Center } from '@chakra-ui/react';
+import { Box, Button, Icon, Text, useToast, Image, Stack, Flex, FormControl, Select, InputGroup, Input, InputRightElement, FormHelperText, Tooltip, useColorModeValue, Center, FormLabel } from '@chakra-ui/react';
 import { IoCartOutline } from "react-icons/io5";
 // import NextLink from 'next/link';
 import Axios from "axios";
@@ -13,121 +13,149 @@ import * as Yup from "yup";
 import ReactPaginate from 'react-paginate';
 
 
-
 export default function BookCard() {
-    const [limit, setLimit] = useState(16)
+    const [limit, setLimit] = useState(10)
     const [searchProduct, setSearchProduct] = useState('')
-    const [page, setPage] = useState(1)
+    const [page, setPage] = useState(0)
     const [totalPage, setTotalPage] = useState(0)
+    const [order, setOrder] = useState("Title")
+    const [order_direction, setOrder_direction] = useState("ASC")
     const dispatch = useDispatch();
+    const Items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
     const data = useSelector((state) => state.bookSlice.value);
-    console.log(data)
+
+    const url = `http://localhost:2000/book/view2?search_query=${searchProduct}&page=${page}&limit=${limit}&order=${order ? order :`Title`}&order_direction=${order_direction ? order_direction : 'ASC'}`
 
     const getData = async () => {
         try {
     
-            const res = await Axios.get("http://localhost:2000/book/list")
-            dispatch(syncData(res.data));
+            const res = await Axios.get(url)
+            dispatch(syncData(res.data.result));
             
         } catch (err) {
-
             console.log(err);
             }
         };
         
+        async function fetchProduct(filter) {
+                setOrder_direction(filter)
+            }
+        async function fetchCategory(filter) {
+                setOrder(filter)
+            }
+        async function fetchLimit(filter) {
+                setLimit(filter)
+            }
+        
+        const formik = useFormik({
+            initialValues: {
+                searchName: ``,
+            },
+            validationSchema: Yup.object().shape({
+                searchName: Yup.string()
+                .min(3, 'Minimal 3 huruf')
+            }),
+            validateOnChange: false,
+            onSubmit: async () => {
+                const { searchName } = formik.values;
+                
+                setSearchProduct(searchName)
+            }
+        })
+        
         useEffect(() => {
             getData()
+        }, [searchProduct, limit, page, totalPage, order, order_direction])
+
+        useEffect(() => {
+            fetchProduct()
+            fetchCategory()
+            fetchLimit()
         }, [])
-
-  // ---------------------- filter name and product code ---------------------- //
-    const formik = useFormik({
-        initialValues: {
-            searchName: ``,
-        },
-        validationSchema: Yup.object().shape({
-            searchName: Yup.string()
-            .min(3, 'Minimal 3 huruf')
-        }),
-        validateOnChange: false,
-        onSubmit: async () => {
-            const { searchName } = formik.values;
-
-            setSearchProduct(searchName)
-            setPage(1)
-        }
-    })
-
 
     return (
         <>
-
+        <Center>
         <Flex flexWrap={'wrap'}  color={useColorModeValue("black", "white")}>
-            <Box className='filter' mr='10px'>
-
-                {/* {/* ---------- Sort By name and Price ---------- */}
-                    <Box w='220px' m='10px' mb='20px' borderWidth='1px' boxShadow='md' borderRadius='7px'>
-                        <Box alignItems={'center'} h='50px' borderTopRadius='7px' align='center' bg='pink.400' display='flex'>
-                            <Box h='25px' w='30px' ml='10px'>
-                            <Icon boxSize='6' as={BsFilterLeft}  />
-                            </Box>
-                            <Box h='25px'>
-                            <Text mx='10px' fontWeight='bold' >
-                                Urut Berdasarkan
-                            </Text>
-                            </Box>
+            <Box className='filter'>
+                <Box  m='10px' mb='20px' borderWidth='1px' boxShadow='md' borderRadius='7px'>
+                    <Box alignItems={'center'} h='50px' borderTopRadius='7px' align='center' bg='pink.400' display='flex'>
+                        <Box h='25px' ml='10px'>
+                        <Icon boxSize='6' as={BsFilterLeft}  />
                         </Box>
-                        <Box p='15px'>
-                            <FormControl  isInvalid={formik.errors.sortByProduct}  >
+                        <Box h='25px'>
+                        <Text mx='10px' fontWeight='bold' >
+                            Filter & Search
+                        </Text>
+                        </Box>
+                            <Icon sx={{ _hover: { cursor: "pointer" } }} boxSize='6' as={BiReset} onClick={() => {
+                                async function submit() {
+                                setSearchProduct('')
+                                document.getElementById("search").value = '';
+                                formik.values.searchName = ''
+                                } submit()
+                            }} />
+                    </Box>
+                    <Flex m={2} wrap="wrap" >
+                        <FormControl w="" m={1} >
+                            <FormLabel fontSize="x-small">Pilih Category</FormLabel>
                             <Select onChange={(event) => {
-                            // fetchProduct(event.target.value)
+                            fetchCategory(event.target.value)
+                        }}>
+                            <option value=''><Text color={useColorModeValue("black", "white")}>-- Category --</Text></option>
+                            <option value='Title'>Title</option>
+                            <option value='Author'>Author</option>
+                            <option value='Publisher'>Publisher</option>
+                            </Select>
+                        </FormControl >
+                        <FormControl w="" m={1} >
+                        <FormLabel fontSize="x-small" >Format Sort</FormLabel>
+                            <Select onChange={(event) => {
+                            fetchProduct(event.target.value)
                         }}>
                             <option value=''><Text color={useColorModeValue("black", "white")}>-- Pilih --</Text></option>
-                            <option value='product_asc'>Nama A-Z</option>
-                            <option value='product_des'>Nama Z-A</option>
-                        </Select>
+                            <option value='ASC'>A-Z</option>
+                            <option value='DESC'>Z-A</option>
+                            </Select>
                         </FormControl>
-                    </Box>
-                </Box>
-            </Box>
-                <Box mx='5px' my='10px' maxW='810px'>
-                <Box display='flex' justifyContent='space-between' mb='10px'>
-
-                {/* ---------- Search filter by Name ---------- */}
-                <Box mx='10px' display='flex'>
-                {/* {formik.values.searchName} */}
-                <FormControl isInvalid={formik.errors.searchName}>
-                    <InputGroup >
-                    <Input placeholder="Cari Buku" _placeholder={{ color: useColorModeValue("black", "white"), opacity: .5 }} id='search' type='text' 
-                        onChange={(event) => formik.setFieldValue("searchName", event.target.value)} />
-                    <InputRightElement>
-                        <Icon
-                        fontSize="xl"
-                        as={BiSearchAlt}
-                        sx={{ _hover: { cursor: "pointer" } }}
-                        onClick={() => formik.handleSubmit()}
-                        />
-                    </InputRightElement>
-                    </InputGroup>
-                    <FormHelperText color="red">
-                    {formik.errors.searchName}
-                    </FormHelperText>
-                </FormControl>
-                <Tooltip label='reset filter' fontSize='sm'>
-                    <Button ml='5px' colorScheme="pink"
-                    onClick={() => {
-                        async function submit() {
-                        setSearchProduct('')
-                        document.getElementById("search").value = '';
-                        formik.values.searchName = ''
-                        } submit()
-                    }} >
-                    <Icon boxSize='6' as={BiReset} />
-                    </Button>
-                </Tooltip>
+                        <FormControl w="" m={1}>
+                        <FormLabel fontSize="x-small">Show</FormLabel>
+                            <Select onChange={(event) => {
+                            fetchLimit(event.target.value)
+                        }}>
+                            <option value=''><Text color={useColorModeValue("black", "white")}>-- Show --</Text></option>
+                            <option value='5'>5</option>
+                            <option value='10'>10</option>
+                            <option value='50'>50</option>
+                            <option value='100'>100</option>
+                            </Select>
+                        </FormControl>
+                        <FormControl w="" m={1} >
+                        <FormLabel fontSize="x-small">Cari Buku</FormLabel>
+                            <InputGroup >
+                            <Input placeholder="Cari Buku" _placeholder={{ color: useColorModeValue("black", "white"), opacity: .5 }} id='search' type='text' 
+                                onChange={(event) => formik.setFieldValue("searchName", event.target.value)} />
+                            <InputRightElement>
+                            
+                                <Icon
+                                fontSize="xl"
+                                as={BiSearchAlt}
+                                sx={{ _hover: { cursor: "pointer" } }}
+                                onClick={() => formik.handleSubmit()}
+                                />
+                            </InputRightElement>
+                            </InputGroup>
+                                <FormHelperText color="red">
+                                {formik.errors.searchName}
+                                </FormHelperText>
+                        </FormControl>
+                        
+                    </Flex>
                 </Box>
                 </Box>
-            </Box>
         </Flex> 
+        </Center>
+
 
     <Center>
         <Flex flexWrap={'wrap'}>
@@ -143,6 +171,9 @@ export default function BookCard() {
                     <Text _hover={{ cursor: 'pointer', color: "pink" }} fontWeight='bold'>
                         {item.Title.substring(0, 25)}{item.Title.length >= 25 ? '...' : null}
                     </Text>
+                </Box>
+                <Box display='flex' fontSize='xs'>
+                        <Text fontWeight='bold' mr='5px'> {item.Publisher.substring(0, 20)}{item.Publisher.length >= 20 ? '...' : null} </Text>
                 </Box>
                 <Box display='flex' fontSize='xs'>
                         <Text fontWeight='bold' color='#213360' textColor='#FF6B6B' mr='5px'> {item.Author} </Text>
@@ -161,22 +192,21 @@ export default function BookCard() {
         </Flex>
     </Center>
 
-    <Center>
-        <ReactPaginate
-            breakLabel="..."
-            nextLabel="next >"
-            // onPageChange={handlePageClick}
-            pageRangeDisplayed={5}
-            // pageCount={pageCount}
-            previousLabel="< previous"
-            renderOnZeroPageCount={null}
-        />
-    </Center>
-        
+
+    {/* <ReactPaginate
+        breakLabel="..."
+        nextLabel="next >"
+        // onPageChange={handlePageClick}
+        pageRangeDisplayed={5}
+        pageCount={10}
+        previousLabel="< previous"
+        renderOnZeroPageCount={null}
+    /> */}
+
+
     </>
     )
 }
-
 
 // {data.map(item => {
 //     return (
@@ -210,10 +240,7 @@ export default function BookCard() {
 // })}
 
 
- {/* <Flex flexWrap={'wrap'} justifyContent={'center'} color={useColorModeValue("black", "white")}>
-            <Box className='filter' mr='10px'>
 
-                {/* ---------- Sort By name and Price ---------- */}
         //         <Box w='220px' m='10px' mb='20px' borderWidth='1px' boxShadow='md' borderRadius='7px'>
         //             <Box alignItems={'center'} h='50px' borderTopRadius='7px' align='center' bg='pink.400' display='flex'>
         //                 <Box h='25px' w='30px' ml='10px'>
@@ -315,4 +342,4 @@ export default function BookCard() {
         //         document.getElementById("pagingInput").value = parseInt(pageNow);
         //         }} size='sm' m='3px' borderColor="pink.400" borderRadius='9px' borderWidth='2px'>Next</Button>
         //     </Box>
-        // </Flex> */}
+        // </Flex> 
