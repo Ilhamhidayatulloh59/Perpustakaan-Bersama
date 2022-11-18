@@ -22,8 +22,6 @@ import Axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-
-
 export default function DetailPage() {
     const params = useParams();
     const [data, setData] = useState()
@@ -50,6 +48,7 @@ export default function DetailPage() {
         spacing={{ base: 8, md: 10 }}
         py={{ base: 18, md: 24 }}>
         <Flex>
+
             <Image
             rounded={'md'}
             alt={data?.Title}
@@ -100,6 +99,7 @@ export default function DetailPage() {
                 <Text
                 fontSize={{ base: '16px', lg: '18px' }}
                 color={useColorModeValue('yellow.500', 'yellow.300')}
+
                 fontWeight={'500'}
                 textTransform={'uppercase'}
                 mb={'4'}>
