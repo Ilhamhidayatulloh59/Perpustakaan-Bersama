@@ -31,6 +31,7 @@ function App() {
           NIM: res.data.NIM,
           username: res.data.username,
           email: res.data.email,
+
         })
       );
       dispatch(
@@ -77,7 +78,7 @@ function App() {
     <div>
       <Routes>
         <Route
-          path="/"
+          path='/'
           element={
             <>
               <NavbarComp />

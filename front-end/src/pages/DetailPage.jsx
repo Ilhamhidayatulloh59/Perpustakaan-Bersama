@@ -22,6 +22,7 @@ import Axios from "axios";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
+
 export default function DetailPage() {
   const params = useParams();
   const [data, setData] = useState();
@@ -50,8 +51,10 @@ export default function DetailPage() {
         py={{ base: 18, md: 24 }}
       >
         <Flex>
+
           <Image
             rounded={"md"}
+
             alt={data?.Title}
             src={data?.Images}
             fit={"cover"}
