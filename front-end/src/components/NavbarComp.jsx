@@ -8,7 +8,6 @@ import {
   Stack,
   Collapse,
   Icon,
-  Link,
   Popover,
   PopoverTrigger,
   PopoverContent, PopoverHeader, PopoverArrow, PopoverCloseButton, PopoverBody, TableContainer, Table, Thead, Tr, Th, Td, Tbody, PopoverFooter, ButtonGroup, Badge,
@@ -41,6 +40,7 @@ import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom'
 
 const url = "http://localhost:2000/user/login";
 
@@ -160,7 +160,7 @@ export default function NavbarComp() {
         borderColor={useColorModeValue("gray.200", "gray.900")}
         align={"center"}
       >
-        <Flex flex={{ base: 1 }} justify={{ md: "start" }} align="center">
+        <Flex as={Link} to="/" flex={{ base: 1 }} justify={{ md: "start" }} align="center">
           <Image
             src="https://openlibrary.org/static/images/openlibrary-logo-tighter.svg"
             w="32"
@@ -234,7 +234,7 @@ export default function NavbarComp() {
               </PopoverBody>
               <PopoverFooter display='flex' justifyContent='flex-end'>
                   <ButtonGroup size='sm'>
-                  <Button colorScheme='pink' >Selengkapnya</Button>
+                  <Button as={Link} to="/cart" colorScheme='pink' >Selengkapnya</Button>
                   </ButtonGroup>
               </PopoverFooter>
           </PopoverContent>

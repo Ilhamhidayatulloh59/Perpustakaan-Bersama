@@ -80,7 +80,7 @@ function App() {
         />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/dashboard" element={<AdminDashboard />} />
-        <Route path="/cart" element={<CartPage />} />
+        <Route path="/cart" element={<><NavbarComp/><CartPage /></>} />
         <Route path="/verification/:token" element={<VerificationPage />} />
         <Route path="/detail/:id" element={<DetailPage />} />
       </Routes>
