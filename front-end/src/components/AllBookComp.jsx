@@ -118,7 +118,6 @@ export default function BookCard() {
     getData()
   }, [searchProduct, limit, totalPage, order, order_direction, page])
 
-
     return (
         <>
         <Center>
