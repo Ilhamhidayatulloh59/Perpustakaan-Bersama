@@ -101,6 +101,7 @@ export default function BookCard() {
                 dispatch(cartSync(res.data))
                 dispatch(addCart())
 
+
                 Swal.fire({
                     icon: 'success',
                     title: 'Good Job',
