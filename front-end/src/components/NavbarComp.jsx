@@ -41,6 +41,7 @@ import Swal from "sweetalert2";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom'
+import { delLoan, loanData } from "../redux/loanSlice";
 
 const url = "http://localhost:2000/user/login";
 
@@ -61,6 +62,7 @@ export default function NavbarComp() {
   const onLogout = () => {
     dispatch(logout());
     dispatch(delData())
+    dispatch(delLoan())
     localStorage.removeItem("token");
   };
 
@@ -75,6 +77,9 @@ export default function NavbarComp() {
 
       const res = await Axios.get(`http://localhost:2000/cart/${result.data.isUserExist.NIM}`);
       dispatch(syncData(res.data))
+
+      const loan = await Axios.get(`http://localhost:2000/loan/${result.data.isUserExist.NIM}`);
+      dispatch(loanData(loan.data))
 
       dispatch(
         login({
@@ -263,6 +268,7 @@ export default function NavbarComp() {
               </Flex>
             </MenuButton>
             <MenuList alignItems={"center"}>
+              <MenuItem as={Link} to="/loan">Loan</MenuItem>
               <MenuItem>Profile</MenuItem>
               <MenuItem onClick={onLogout}>Log Out</MenuItem>
               {isVerified ? (
@@ -508,6 +514,7 @@ const MobileNav = () => {
               </Flex>
             </MenuButton>
             <MenuList alignItems={"center"}>
+              <MenuItem as={Link} to="/loan">Loan</MenuItem>
               <MenuItem>Profile</MenuItem>
               <MenuItem onClick={onLogout}>Log Out</MenuItem>
               {isVerified ? (

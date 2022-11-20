@@ -3,22 +3,46 @@
         InputRightElement, Input, Tooltip, useToast, Image,
         Modal, ModalOverlay, ModalHeader, ModalBody, ModalCloseButton, ModalContent, Divider
     } from '@chakra-ui/react';
-    import { HiMinusSm, HiPlusSm } from "react-icons/hi";
-    import { FaTrashAlt, FaEdit } from "react-icons/fa";
     import { useSelector } from 'react-redux';
-    import {Link} from "react-router-dom"
+    import {Link, useNavigate} from "react-router-dom"
+    import Axios from "axios";
+    import Swal from 'sweetalert2'
 
     export default function CartDetail() {
-        const { NIM, email ,isVerified, cart } = useSelector((state) => state.userSlice.value)
+        const { NIM, email ,isVerified, cart, loan } = useSelector((state) => state.userSlice.value)
         const data = useSelector((state) => state.cartSlice.value);
+        const navigate = useNavigate()
+
+        const url = "http://localhost:2000/loan"
 
         const onBorrow = async () => {
-            const Borrow_date = document.getElementById("Borrow_date").value
-            const Return_date = document.getElementById("Return_date").value
-            if(Borrow_date === "" || Return_date === "") return alert("input tanggal peminjaman dan pengembalian")
-            console.log(new Date(Borrow_date))
-            console.log(new Date(Return_date) - new Date (Borrow_date))
+            try {
+                const Borrow_date = document.getElementById("Borrow_date").value
+                const Return_date = document.getElementById("Return_date").value
+                const res = await Axios.post(url, {Borrow_date, Return_date, NIM, data, isVerified, isActive: loan})
 
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Good Job',
+                    text: `${res.data.massage}`,
+                    timer: 2000,
+                    customClass: {
+                        container: 'my-swal'
+                    }
+                })
+
+                setTimeout(() => navigate(`/loan`), 2000);
+
+            } catch (err) {
+                console.log(err)
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: err.response.data.name
+                        ? err.response.data.errors[0].message
+                        : err.response.data,
+                });
+            }
         }
 
     return (

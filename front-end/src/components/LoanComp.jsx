@@ -1,77 +1,92 @@
 import {
     Flex, Box, Text, Button, InputGroup, InputLeftElement, Icon, useDisclosure,
     InputRightElement, Input, Tooltip, useToast, Image,
-    Modal, ModalOverlay, ModalHeader, ModalBody, ModalCloseButton, ModalContent, Divider
+    Modal, ModalOverlay, ModalHeader, ModalBody, ModalCloseButton, ModalContent, Divider, Badge
 } from '@chakra-ui/react';
-import { HiMinusSm, HiPlusSm } from "react-icons/hi";
-import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import { useSelector } from 'react-redux';
 import {Link} from "react-router-dom"
+import Axios from "axios";
+import Swal from 'sweetalert2'
 
 export default function CartDetail() {
     const { NIM, email ,isVerified, cart } = useSelector((state) => state.userSlice.value)
     const data = useSelector((state) => state.cartSlice.value);
+    const loan = useSelector((state) => state.loanSlice.value);
+    console.log(loan)
+
 
 return (
     <Box>
+
+        {loan.map(i => {
+            return (
     <Box display='flex' justifyContent='center' flexWrap={'wrap'}>
-
-    
-
-        <Box minW='370px' w={'55vw'} mx='15px' my='10px' p='25px' px='20px' justifyContent={'center'} boxShadow='md' borderWidth='1px' borderRadius="10px">
-        {
-            NIM === 0 ?
-            <Box align='center'>
-                <Image src='https://www.kibrispdr.org/data/1779/gif-pendidikan-4.gif' objectFit='contain' w='400px' h='300px' />
-                <Text textAlign='center' fontWeight='bold'>Keranjang anda kosong</Text>
-                <Text as={Link} to="/" textAlign='center' fontWeight='bold' color="pink.400" w='150px' _hover={{ cursor: 'pointer', textDecoration: 'underline' }}>
-                Pinjam Sekarang
+        <Box h='480px' p='25px' minW='370px' w={'22vw'} mx='15px' mt='10px' mb='20px' justifyContent={'center'} boxShadow='md' borderWidth='1px' borderRadius="10px">
+            <Text fontWeight='bold' fontSize='lg'>
+                Detail Loan
+            </Text>
+            <Box display='flex' mt='10px' justifyContent='center' >
+                <Image src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${i.no_invoice}`} />
+            </Box>
+            <Box display='flex' mt='10px' justifyContent='space-between' >
+                <Text fontWeight='semibold'>
+                No Invoice :
+                </Text>
+                <Text fontWeight='semibold'>
+                {i.no_invoice}
                 </Text>
             </Box>
-            :
-            // {data.map(item => {
-            //     return (
-                <>
-                <Box boxShadow='sm' borderWidth='1px' borderRadius='10px' mb='20px' p='10px' _hover={{ boxShadow: 'lg' }}>
-                <Box mt='5px'>
-                    <Text alignSelf='center' fontWeight='semibold' fontSize='sm' mb='5px'>
-                    Banyak Buku: {cart} Buku
+            <Box display='flex' mt='10px' justifyContent='space-between' >
+                <Text fontWeight='semibold'>
+                NIM :
+                </Text>
+                <Text fontWeight='semibold'>
+                {i.UserNIM}
+                </Text>
+            </Box>
+            <Box display='flex' mt='10px' justifyContent='space-between' >
+                <Text fontWeight='semibold'>
+                Status :
+                </Text>
+                <Badge borderRadius="xl" alignSelf="center" color={i.transaction_status === 'Pengajuan' ? 'yellow.400' : i.transaction_status === 'Peminjaman' ? 'green.400' : 'red.400'}>
+                    <Text fontWeight='semibold'>
+                    {i.transaction_status}
                     </Text>
-                </Box>
+                </Badge>
+            </Box>
 
-                {/* <Box mt='5px'>
-                    <Text alignSelf='center' fontWeight='semibold' fontSize='sm' mb='5px'>
-                    Pilih Kurir :
-                    </Text>
-                    <FormControl isInvalid={formik.errors.courier} marginTop={"10px"}>
-                    <Select onChange={(event) => formik.setFieldValue("courier", event.target.value)}>
-                        <option value="">- Pilih Kurir -</option>
-                        {renderCouriers()}
-                    </Select>
-                    <FormHelperText color="red">
-                        {formik.errors.courier}
-                    </FormHelperText>
-                    </FormControl>
-                </Box> */}
-                {/* ----- Pilih Service ----- */}
-                    {/* <Box mt='10px'>
-                        <Text alignSelf='center' fontWeight='semibold' fontSize='sm' mb='5px'>
-                        Pilih Service :
-                        </Text>
-                        <FormControl isInvalid={formik.errors.service} marginTop={"10px"}>
-                        <Select onChange={(event) => formik.setFieldValue("service", event.target.value)}>
-                            <option value="">- Pilih Service -</option>
+            <Divider my='20px' />
+            <Box display='flex' mt='10px' justifyContent='space-between' >
+                <Text fontSize="small" fontWeight='semibold'>
+                Tanggal Peminjaman :
+                </Text>
+                <Text fontSize="small" fontWeight='semibold'>
+                {i.Borrow_date}
+                </Text>
+            </Box>
+            <Box display='flex' mt='10px' justifyContent='space-between' >
+                <Text fontSize="small" fontWeight='semibold'>
+                Tanggal Pengembalian :
+                </Text>
+                <Text fontSize="small" fontWeight='semibold'>
+                {i.Return_date}
+                </Text>
+            </Box>
+            
+            <Box display='flex' mt='30px' justifyContent='space-between' >
+                <Text fontWeight='bold'>
+                Jumlah Buku :
+                </Text>
+                <Text fontWeight='bold'>
+                {i.Loan_Details.length}
+                </Text>
+            </Box>
+            </Box>
+        
 
-                            {formik.values.courier ? renderCostRajaOngkir() : null}
-                        </Select>
-                        <FormHelperText color="red">
-                            {formik.errors.service}
-                        </FormHelperText>
-                        </FormControl>
-                    </Box> */}
-                </Box>
+        <Box minW='370px' w={'55vw'} mx='15px' my='10px' p='25px' px='20px' justifyContent={'center'} boxShadow='md' borderWidth='1px' borderRadius="10px">
                 <Box boxShadow='sm' borderWidth='1px' borderRadius='10px' mb='20px' p='10px' _hover={{ boxShadow: 'lg' }}>
-                {data.map(item => {
+                {i.Loan_Details.map(item => {
                     return (
                     <>
                     <Flex justifyContent='space-between'>
@@ -108,48 +123,11 @@ return (
                     )
                 })}
                 </Box>
-                </>
-                }
-        </Box>
-
-        <Box h='280px' p='25px' minW='370px' w={'22vw'} mx='15px' mt='10px' mb='20px' justifyContent={'center'} boxShadow='md' borderWidth='1px' borderRadius="10px">
-        <Text fontWeight='bold' fontSize='lg'>
-            Keterangan
-        </Text>
-        <Box display='flex' mt='20px' justifyContent='space-between' >
-            <Text fontWeight='semibold'>
-            NIM :
-            </Text>
-            <Text fontWeight='semibold'>
-            {NIM}
-            </Text>
-        </Box>
-        <Box display='flex' mt='20px' justifyContent='space-between' >
-            <Text fontWeight='semibold'>
-            Email :
-            </Text>
-            <Text fontWeight='semibold'>
-            {email}
-            </Text>
-        </Box>
-        
-        <Box display='flex' mt='20px' justifyContent='space-between' >
-            <Text fontWeight='bold'>
-            Jumlah Buku :
-            </Text>
-            <Text fontWeight='bold'>
-            {cart}
-            </Text>
-        </Box>
-        <Box mt='20px' display='flex' justifyContent='flex-end' >
-            <Button w='full' borderColor="pink.400" borderRadius='9px' borderWidth='2px'
-            _hover={{ bg: "pink" }} disabled={cart.length === 0 ? true : false}>
-            Pinjam Sekarang
-            </Button>
-        </Box>
         </Box>
 
     </Box>
+    )
+})}
     </Box>
 )
 }
