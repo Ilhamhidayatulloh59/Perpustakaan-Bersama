@@ -121,7 +121,7 @@ module.exports = {
         where: {
           id: req.params.id,
         },
-        
+
       });
       console.log(req.params.id);
       const users = await book.findAll();

@@ -108,6 +108,7 @@ export default function StatsComp() {
       ></chakra.h1>
 
       <SimpleGrid columns={{ base: 1, md: 3 }} spacing={{ base: 5, lg: 8 }}>
+
         {/* <Button onClick={onOpen} variant="ghost"> */}
           <StatsCard
             title={"Users"}
@@ -165,6 +166,22 @@ export default function StatsComp() {
           title={"Transactions"}
           stat={data2.length}
           icon={<CheckIcon />}
+
+        <StatsCard
+          title={"Users"}
+          stat={data.length}
+          icon={<BsPerson size={"3em"} />}
+        />
+        <StatsCard
+          title={"Books"}
+          stat={data1.length}
+          icon={<FiServer size={"3em"} />}
+        />
+        <StatsCard
+          title={"Transactions"}
+          stat={"Coming Soon"}
+          icon={<GoLocation size={"3em"} />}
+
         />
       </SimpleGrid>
     </Box>
